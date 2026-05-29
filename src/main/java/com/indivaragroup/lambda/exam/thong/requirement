@@ -1,0 +1,93 @@
+Ini versi rapih dari skenario kamu, sudah saya mapping ke functional interface yang sesuai:
+java
+/*
+ * ═══════════════════════════════════════════════════════════════════
+ *          TOKO PAKAIAN DALAM & PAKAIAN BERENANG
+ * ═══════════════════════════════════════════════════════════════════
+ *
+ * FUNCTIONAL INTERFACE YANG DIGUNAKAN:
+ *   - Consumer, BiConsumer
+ *   - Function, BiFunction
+ *   - Predicate, BiPredicate
+ *   - Supplier
+ *
+ * ACTRESS (PEMBELI):
+ *   - BAGUS          → Pria
+ *   - RENA MIYASHITA → Wanita
+ *
+ * ═══════════════════════════════════════════════════════════════════
+ *
+ * SKENARIO 1: BAGUS (Pria) — Beli Pakaian Dalam
+ * ───────────────────────────────────────────────────────────────────
+ *
+ * STEP 1 - [Consumer]
+ *   Bagus datang ke toko, melihat-lihat produk di etalase.
+ *   → Consumer<List<Product>> : tampilkan semua produk di etalase.
+ *
+ * STEP 2 - [Predicate]
+ *   Bagus bingung memilih antara 2 model:
+ *     a. Model Segitiga (celana dalam biasa)
+ *     b. Model Belalai (boxer/trunk)
+ *   → Predicate<Product> : filter produk berdasarkan model/category.
+ *
+ * STEP 3 - [BiPredicate]
+ *   Bagus menentukan pilihan: Model Segitiga.
+ *   → BiPredicate<Product, String> : validasi produk sesuai model & size.
+ *
+ * STEP 4 - [Function]
+ *   Bagus ingin tahu harga Model Segitiga.
+ *   → Function<Product, String> : ambil info harga dari produk yang dipilih.
+ *
+ * STEP 5 - [BiFunction]
+ *   Bagus compare harga Model Segitiga vs Model Belalai.
+ *   → BiFunction<Product, Product, String> : bandingkan harga 2 produk,
+ *     return hasil perbandingan.
+ *
+ * STEP 6 - [Predicate]
+ *   Bagus memprediksi harga Model Segitiga akan naik di kemudian hari.
+ *   → Predicate<Product> : cek apakah produk termasuk kategori yang
+ *     harganya cenderung naik (misal: limited edition / trending).
+ *
+ * STEP 7 - [Supplier]
+ *   Bagus akhirnya memutuskan untuk beli Model Belalai.
+ *   → Supplier<Product> : supply/generate keputusan akhir produk yang dibeli.
+ *   → Consumer<Product> : proses pembelian & cetak struk.
+ *
+ * ═══════════════════════════════════════════════════════════════════
+ *
+ * SKENARIO 2: RENA MIYASHITA (Wanita) — Beli Pakaian Berenang
+ * ───────────────────────────────────────────────────────────────────
+ *
+ * STEP 1 - [Function + Predicate]
+ *   Rena melihat etalase, langsung filter produk:
+ *   harus kategori "tipis" (bahan ringan).
+ *   → Predicate<Product> : filter berdasarkan kategori bahan.
+ *   → Function<List<Product>, List<Product>> : transform list → hasil filter.
+ *
+ * STEP 2 - [BiConsumer]
+ *   Rena masih bingung setelah filter. Pemilik toko memberi saran:
+ *   "Beli yang tipis, merek X, model Y."
+ *   → BiConsumer<Product, String> : tampilkan saran (produk + alasan/rekomendasi).
+ *
+ * STEP 3 - [Supplier + Consumer]
+ *   Rena setuju dengan saran pemilik toko, memilih produk yang disarankan.
+ *   → Supplier<Product> : supply produk rekomendasi dari pemilik toko.
+ *   → Consumer<Product> : Rena menerima/mengambil produk tersebut.
+ *
+ * STEP 4 - [Function]
+ *   Rena bertanya: "Harganya berapa?"
+ *   → Function<Product, Double> : ambil harga produk.
+ *   → Consumer<String> : tampilkan harga ke customer.
+ *
+ * ═══════════════════════════════════════════════════════════════════
+ */
+### Ringkasan Mapping:
+| Step | Bagus (Pria) | Rena (Wanita) |
+|------|-------------|---------------|
+| Lihat etalase | Consumer | Function + Predicate |
+| Bingung pilih | Predicate | BiConsumer (saran toko) |
+| Tentukan pilihan | BiPredicate | Supplier + Consumer |
+| Tanya harga | Function | Function |
+| Compare produk | BiFunction | — |
+| Prediksi/analisa | Predicate | — |
+| Keputusan akhir | Supplier | — |
