@@ -1,0 +1,74 @@
+📋 SOAL CHALLENGE: Java Collection - Nested List Category
+Deskripsi
+Buatlah program Java yang mengelola daftar film dengan sistem kategori bersarang (nested category) hingga 4 level kedalaman.
+
+Struktur Kategori (4 Turunan/Level)
+Category (Level 1)
+└── Sub Category (Level 2)
+└── Sub Sub Category (Level 3)
+└── Sub Sub Sub Category (Level 4)
+
+Kategori Utama (Level 1):
+TEEN YO
+BEAUTIFUL GIRL
+NEW COMER 2026
+Contoh Nested:
+TEEN YO
+├── SCHOOL GIRL
+│ ├── UNIFORM
+│ │ └── SUMMER EDITION
+│ └── CASUAL
+│ └── WEEKEND EDITION
+├── COLLEGE
+│ ├── FRESHMAN
+│ │ └── DEBUT 2026
+│ └── SENIOR
+│ └── GRADUATION SPECIAL
+
+Attribute Data Film:
+No	Field	Tipe
+1	NAMA_ARTIST	String
+2	KODE_AV	String
+3	TANGGAL_RELEASE	LocalDate
+4	CATEGORY	String
+5	SUB_CATEGORY	String
+Requirement:
+Buat model class Film dengan attribute di atas
+Buat nested List<> atau Map<String, List<>> untuk menyimpan kategori hingga 4 level
+User bisa memilih (choose) kategori dari level 1, lalu drill-down ke level 2, 3, 4
+Tampilkan data film yang ada di level yang dipilih
+Gunakan Scanner untuk input pilihan user
+Contoh Output yang Diharapkan:
+=== FILM CATEGORY ===
+
+TEEN YO
+BEAUTIFUL GIRL
+NEW COMER 2026
+Pilih kategori: 1
+=== SUB CATEGORY: TEEN YO ===
+SCHOOL GIRL
+COLLEGE
+Pilih sub kategori: 1
+=== SUB SUB CATEGORY: SCHOOL GIRL ===
+UNIFORM
+CASUAL
+Pilih sub sub kategori: 1
+=== LEVEL 4: UNIFORM ===
+SUMMER EDITION
+Pilih: 1
+=== DATA FILM: SUMMER EDITION ===
++----+---------------+----------+----------------+----------+------------------+
+| No | NAMA_ARTIST | KODE_AV | TGL_RELEASE | CATEGORY | SUB_CATEGORY |
++----+---------------+----------+----------------+----------+------------------+
+| 1 | Artist A | ABX-001 | 2026-01-15 | TEEN YO | SUMMER EDITION |
+| 2 | Artist B | ABX-002 | 2026-02-20 | TEEN YO | SUMMER EDITION |
++----+---------------+----------+----------------+----------+------------------+
+Konsep Java Collection yang Diuji:
+List — menyimpan data film
+ArrayList — implementasi List
+Map<String, List> atau Map<String, Map<>> — nested category
+Collection interface — iterasi data
+Iterator — traversal data
+Bonus Challenge:
+Tambahkan fitur search film by KODE_AV across all categories
+Tambahkan fitur count total film per category
