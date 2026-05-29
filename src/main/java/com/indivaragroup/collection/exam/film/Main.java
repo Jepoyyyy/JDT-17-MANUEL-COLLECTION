@@ -16,7 +16,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            System.out.println("\n=== MAIN MENU ===");
+            System.out.println("MAIN MENU");
             System.out.println("1. Browse Category");
             System.out.println("2. Search Film by KODE_AV (Bonus)");
             System.out.println("3. Count Total Film per Category (Bonus)");
@@ -168,25 +168,28 @@ public class Main {
     }
 
     private static void printTable(List<Film> films) {
-        System.out.println("+----+---------------+----------+----------------+-----------------+------------------+");
-        System.out.printf("| %-2s | %-13s | %-8s | %-14s | %-15s | %-16s |\n",
-                "No", "NAMA_ARTIST", "KODE_AV", "TGL_RELEASE", "CATEGORY", "SUB_CATEGORY");
-        System.out.println("+----+---------------+----------+----------------+-----------------+------------------+");
+        String pembatas = "+----+---------------+----------+----------------+-----------------+------------------+";
+
+        System.out.println(pembatas);
+        System.out.println("| No | NAMA_ARTIST   | KODE_AV  | TGL_RELEASE    | CATEGORY        | SUB_CATEGORY     |");
+        System.out.println(pembatas);
 
         if (films == null || films.isEmpty()) {
-            System.out.printf("| %-81s |\n", "Tidak ada data film di kategori ini.");
+            System.out.println("| Tidak ada data film di kategori ini.                                                 |");
         } else {
             int index = 1;
             for (Film film : films) {
-                System.out.printf("| %-2d | %-13s | %-8s | %-14s | %-15s | %-16s |\n",
-                        index++,
-                        film.getArtistName(),
-                        film.getAvCode(),
-                        film.getReleaseDate().toString(),
-                        film.getCategory(),
-                        film.getSubCategory());
+                String no = String.valueOf(index++);
+                String artist = film.getArtistName();
+                String kode = film.getAvCode();
+                String rilis = film.getReleaseDate().toString();
+                String kategori = film.getCategory();
+                String subKategori = film.getSubCategory();
+
+                System.out.println("| " + no + " | " + artist + " | " + kode + " | " + rilis + " | " + kategori + " | " + subKategori + " |");
             }
         }
-        System.out.println("+----+---------------+----------+----------------+-----------------+------------------+");
+        System.out.println(pembatas);
+
     }
 }
