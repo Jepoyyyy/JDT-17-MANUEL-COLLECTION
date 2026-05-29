@@ -1,11 +1,11 @@
 package com.indivaragroup.collection.exam.film;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-
 
 public class Main {
 
@@ -134,19 +134,19 @@ public class Main {
         String keyword = scanner.nextLine().trim();
         List<Film> foundFilms = new ArrayList<>();
 
-        for (Map<String, Map<String, Map<String, List<Film>>>> l1 : database.values()) {
-            for (Map<String, Map<String, List<Film>>> l2 : l1.values()) {
-                for (Map<String, List<Film>> l3 : l2.values()) {
-                    for (List<Film> l4 : l3.values()) {
-                        for (Film film : l4) {
-                            if (film.getAvCode().equalsIgnoreCase(keyword)) {
-                                foundFilms.add(film);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        database.values().forEach(l1 ->
+                l1.values().forEach(l2 ->
+                        l2.values().forEach(l3 ->
+                                l3.values().forEach(listFilm ->
+                                        listFilm.forEach(film -> {
+                                            if (film.getAvCode().equalsIgnoreCase(keyword)) {
+                                                foundFilms.add(film);
+                                            }
+                                        })
+                                )
+                        )
+                )
+        );
 
         System.out.println("=== HASIL PENCARIAN ===");
         printTable(foundFilms);
@@ -154,17 +154,16 @@ public class Main {
 
     private static void countFilm() {
         System.out.println("\n=== JUMLAH FILM PER CATEGORY ===");
-        for (Map.Entry<String, Map<String, Map<String, Map<String, List<Film>>>>> entry1 : database.entrySet()) {
-            int count = 0;
-            for (Map<String, Map<String, List<Film>>> l2 : entry1.getValue().values()) {
-                for (Map<String, List<Film>> l3 : l2.values()) {
-                    for (List<Film> l4 : l3.values()) {
-                        count += l4.size();
-                    }
-                }
-            }
-            System.out.println(entry1.getKey() + " : " + count + " film");
-        }
+
+        database.forEach((categoryName, l1) -> {
+            final int[] totalCount = {0};
+            l1.values().forEach(l2 ->
+                    l2.values().forEach(l3 ->
+                            l3.values().forEach(listFilm -> totalCount[0] += listFilm.size())
+                    )
+            );
+            System.out.println(categoryName + " : " + totalCount[0] + " film");
+        });
     }
 
     private static void printTable(List<Film> films) {
@@ -177,19 +176,17 @@ public class Main {
         if (films == null || films.isEmpty()) {
             System.out.println("| Tidak ada data film di kategori ini.                                                 |");
         } else {
-            int index = 1;
-            for (Film film : films) {
-                String no = String.valueOf(index++);
+            final int[] index = {1};
+            films.forEach(film -> {
+                String no = String.valueOf(index[0]++);
                 String artist = film.getArtistName();
                 String kode = film.getAvCode();
                 String rilis = film.getReleaseDate().toString();
                 String kategori = film.getCategory();
                 String subKategori = film.getSubCategory();
-
                 System.out.println("| " + no + " | " + artist + " | " + kode + " | " + rilis + " | " + kategori + " | " + subKategori + " |");
-            }
+            });
         }
         System.out.println(pembatas);
-
     }
 }
