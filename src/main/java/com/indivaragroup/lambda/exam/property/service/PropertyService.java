@@ -17,106 +17,106 @@ public class PropertyService {
         this.products = products;
     }
 
-    public void tampilkanSemuaProperty() {
+    public void displayAllProperties() {
         products.forEach(PropertyAsset::cetak);
     }
 
-    public void filterBelumTerjual() {
+    public void filterUnsoldProperties() {
         List<PropertyAsset> copyList = new ArrayList<>(products);
         copyList.removeIf(PropertyAsset::isWasSold);
         copyList.forEach(PropertyAsset::cetak);
     }
 
-    public void sortingHargaAscending() {
+    public void sortPriceAscending() {
         List<PropertyAsset> copyList = new ArrayList<>(products);
         copyList.sort(Comparator.comparingDouble(PropertyAsset::getPrice));
         copyList.forEach(PropertyAsset::cetak);
     }
 
-    public void sortingHargaDescending() {
+    public void sortPriceDescending() {
         List<PropertyAsset> copyList = new ArrayList<>(products);
         copyList.sort(Comparator.comparingDouble(PropertyAsset::getPrice).reversed());
         copyList.forEach(PropertyAsset::cetak);
     }
 
-    public void filterStreamSkenario() {
-        System.out.println("1. Tipe RUMAH saja:");
-        products.stream().filter(p -> p.getPropertyType().equals("RUMAH")).forEach(PropertyAsset::cetak);
+    public void filterStreamScenarios() {
+        System.out.println("1. HOUSE Type Only:");
+        products.stream().filter(property -> property.getPropertyType().equalsIgnoreCase("RUMAH")).forEach(PropertyAsset::cetak);
 
-        System.out.println("\n2. Lokasi Bekasi Selatan:");
-        products.stream().filter(p -> p.getLocation().equals("Bekasi Selatan")).forEach(PropertyAsset::cetak);
+        System.out.println("\n2. South Bekasi Location:");
+        products.stream().filter(property -> property.getLocation().equalsIgnoreCase("Bekasi Selatan")).forEach(PropertyAsset::cetak);
 
-        System.out.println("\n3. Harga di bawah 1 Milyar:");
-        products.stream().filter(p -> p.getPrice() < 1000000000.0).forEach(PropertyAsset::cetak);
+        System.out.println("\n3. Price Under 1 Billion:");
+        products.stream().filter(property -> property.getPrice() < 1000000000.0).forEach(PropertyAsset::cetak);
 
-        System.out.println("\n4. Luas Tanah > 100m² DAN Belum Terjual:");
-        Predicate<PropertyAsset> luasLebih100 = p -> p.getAreaSize() > 100;
-        Predicate<PropertyAsset> belumTerjual = p -> !p.isWasSold();
-        products.stream().filter(luasLebih100.and(belumTerjual)).forEach(PropertyAsset::cetak);
+        System.out.println("\n4. Land Area > 100m² AND Unsold:");
+        Predicate<PropertyAsset> landAreaOver100 = property -> property.getAreaSize() > 100;
+        Predicate<PropertyAsset> isUnsold = property -> !property.isWasSold();
+        products.stream().filter(landAreaOver100.and(isUnsold)).forEach(PropertyAsset::cetak);
     }
 
-    public void transformasiData() {
-        System.out.println("1 & 2. Nama Property UPPERCASE:");
+    public void transformData() {
+        System.out.println("1 & 2. Property Name UPPERCASE:");
         products.stream()
                 .map(PropertyAsset::getPropertyName)
                 .map(String::toUpperCase)
                 .forEach(System.out::println);
 
-        System.out.println("\n3. Format Harga ke Rupiah:");
+        System.out.println("\n3. Price Format to Rupiah:");
         products.stream()
                 .map(PropertyAsset::getPrice)
                 .map(PropertyFormatter::formatRupiah)
                 .forEach(System.out::println);
     }
 
-    public void hitungTotalNilaiAssets() {
-        double totalTersedia = products.stream()
-                .filter(p -> !p.isWasSold())
+    public void calculateTotalAssetValue() {
+        double totalAvailable = products.stream()
+                .filter(property -> !property.isWasSold())
                 .mapToDouble(PropertyAsset::getPrice)
                 .sum();
-        System.out.println("Total harga property belum terjual: " + PropertyFormatter.formatRupiah(totalTersedia));
+        System.out.println("Total price of unsold properties: " + PropertyFormatter.formatRupiah(totalAvailable));
 
-        System.out.println("\nRata-rata harga per tipe:");
-        Map<String, Double> rataRataPerTipe = products.stream()
+        System.out.println("\nAverage price per type:");
+        Map<String, Double> averageByType = products.stream()
                 .collect(Collectors.groupingBy(
                         PropertyAsset::getPropertyType,
                         Collectors.averagingDouble(PropertyAsset::getPrice)
                 ));
-        rataRataPerTipe.forEach((tipe, rata) ->
-                System.out.println(tipe + " : " + PropertyFormatter.formatRupiah(rata)));
+        averageByType.forEach((type, avg) ->
+                System.out.println(type + " : " + PropertyFormatter.formatRupiah(avg)));
     }
 
-    public void groupingCollectors() {
-        System.out.println("1. Group berdasarkan Tipe:");
-        Map<String, List<PropertyAsset>> byTipe = products.stream().collect(Collectors.groupingBy(PropertyAsset::getPropertyType));
-        byTipe.forEach((tipe, list) -> {
-            System.out.println("[" + tipe + "]");
+    public void groupWithCollectors() {
+        System.out.println("1. Group by Type:");
+        Map<String, List<PropertyAsset>> byType = products.stream().collect(Collectors.groupingBy(PropertyAsset::getPropertyType));
+        byType.forEach((type, list) -> {
+            System.out.println("[" + type + "]");
             list.forEach(PropertyAsset::cetak);
         });
 
-        System.out.println("\n2. Group berdasarkan Lokasi (Count):");
-        Map<String, Long> countByLokasi = products.stream().collect(Collectors.groupingBy(PropertyAsset::getLocation, Collectors.counting()));
-        countByLokasi.forEach((lokasi, count) -> System.out.println(lokasi + " : " + count + " property"));
+        System.out.println("\n2. Group by Location (Count):");
+        Map<String, Long> countByLocation = products.stream().collect(Collectors.groupingBy(PropertyAsset::getLocation, Collectors.counting()));
+        countByLocation.forEach((location, count) -> System.out.println(location + " : " + count + " properties"));
 
-        System.out.println("\n3. Group berdasarkan Status Terjual:");
+        System.out.println("\n3. Group by Sold Status:");
         Map<Boolean, List<PropertyAsset>> byStatus = products.stream().collect(Collectors.groupingBy(PropertyAsset::isWasSold));
-        System.out.println("[TERJUAL]");
+        System.out.println("[SOLD]");
         byStatus.getOrDefault(true, Collections.emptyList()).forEach(PropertyAsset::cetak);
-        System.out.println("[TERSEDIA / BELUM TERJUAL]");
+        System.out.println("[AVAILABLE / UNSOLD]");
         byStatus.getOrDefault(false, Collections.emptyList()).forEach(PropertyAsset::cetak);
     }
 
-    public PropertyAsset buatPropertyBaru(Supplier<PropertyAsset> supplier) {
+    public PropertyAsset createNewProperty(Supplier<PropertyAsset> supplier) {
         return supplier.get();
     }
 
-    public void customComparatorChained() {
+    public void customChainedComparator() {
         List<PropertyAsset> copyList1 = new ArrayList<>(products);
         copyList1.sort(
                 Comparator.comparing(PropertyAsset::getLocation)
                         .thenComparing(Comparator.comparingDouble(PropertyAsset::getPrice).reversed())
         );
-        System.out.println("1. Sort Lokasi (Asc) -> Harga (Desc):");
+        System.out.println("1. Sort Location (Asc) -> Price (Desc):");
         copyList1.forEach(PropertyAsset::cetak);
 
         List<PropertyAsset> copyList2 = new ArrayList<>(products);
@@ -124,56 +124,54 @@ public class PropertyService {
                 Comparator.comparing(PropertyAsset::getPropertyType)
                         .thenComparing(Comparator.comparingInt(PropertyAsset::getYearBuilt).reversed())
         );
-        System.out.println("\n2. Sort Tipe (Asc) -> Tahun Dibangun (Desc):");
+        System.out.println("\n2. Sort Type (Asc) -> Year Built (Desc):");
         copyList2.forEach(PropertyAsset::cetak);
     }
 
     public void generateReport() {
-        long totalProperty = products.size();
-        long terjual = products.stream().filter(PropertyAsset::isWasSold).count();
-        long tersedia = totalProperty - terjual;
+        long totalProperties = products.size();
+        long soldCount = products.stream().filter(PropertyAsset::isWasSold).count();
+        long availableCount = totalProperties - soldCount;
 
-        double totalNilaiTersedia = products.stream()
-                .filter(p -> !p.isWasSold())
+        double totalAvailableValue = products.stream()
+                .filter(property -> !property.isWasSold())
                 .mapToDouble(PropertyAsset::getPrice)
                 .sum();
 
-        Map<String, Long> distribusiLokasi = products.stream()
+        Map<String, Long> locationDistribution = products.stream()
                 .collect(Collectors.groupingBy(PropertyAsset::getLocation, Collectors.counting()));
 
         System.out.println("========================================");
-        System.out.println("   LAPORAN ASSETS PROPERTY BEKASI REALTY GROUP");
+        System.out.println("   PROPERTY ASSET REPORT - BEKASI REALTY GROUP");
         System.out.println("========================================");
-        System.out.println("Total Property       : " + totalProperty);
-        System.out.println("Property Terjual     : " + terjual);
-        System.out.println("Property Tersedia    : " + tersedia);
-        System.out.println("\n--- PROPERTY TERSEDIA (Sorted by Harga) ---");
+        System.out.println("Total Properties     : " + totalProperties);
+        System.out.println("Properties Sold      : " + soldCount);
+        System.out.println("Properties Available : " + availableCount);
+        System.out.println("\n--- AVAILABLE PROPERTIES (Sorted by Price) ---");
 
-        List<PropertyAsset> listTersedia = products.stream()
-                .filter(p -> !p.isWasSold())
+        List<PropertyAsset> availableList = products.stream()
+                .filter(property -> !property.isWasSold())
                 .sorted(Comparator.comparingDouble(PropertyAsset::getPrice))
                 .collect(Collectors.toList());
 
         final int[] index = {1};
-        listTersedia.forEach(p -> System.out.println((index[0]++) + ". [" + p.getId() + "] " + p.getPropertyName() + " | " + PropertyFormatter.formatRupiah(p.getPrice())));
+        availableList.forEach(property -> System.out.println((index[0]++) + ". [" + property.getId() + "] " + property.getPropertyName() + " | " + PropertyFormatter.formatRupiah(property.getPrice())));
 
-        System.out.println("\n--- TOTAL NILAI ASSETS TERSEDIA ---");
-        System.out.println("Total: " + PropertyFormatter.formatRupiah(totalNilaiTersedia));
-        System.out.println("\n--- DISTRIBUSI PER LOKASI ---");
-        distribusiLokasi.forEach((lokasi, count) -> System.out.println(String.format("%-15s : %d property", lokasi, count)));
+        System.out.println("\n--- TOTAL VALUE OF AVAILABLE ASSETS ---");
+        System.out.println("Total: " + PropertyFormatter.formatRupiah(totalAvailableValue));
+        System.out.println("\n--- DISTRIBUTION BY LOCATION ---");
+        locationDistribution.forEach((location, count) -> System.out.println(String.format("%-15s : %d properties", location, count)));
         System.out.println("========================================");
     }
 
-    // BONUS CHALLENGE 1
-    public List<PropertyAsset> filterTipeDanLokasi(String tipe, String lokasi) {
+    public List<PropertyAsset> filterByTypeAndLocation(String type, String location) {
         BiFunction<String, String, List<PropertyAsset>> filterBiFunc = (t, l) -> products.stream()
-                .filter(p -> p.getPropertyType().equalsIgnoreCase(t) && p.getLocation().equalsIgnoreCase(l))
+                .filter(property -> property.getPropertyType().equalsIgnoreCase(t) && property.getLocation().equalsIgnoreCase(l))
                 .collect(Collectors.toList());
-        return filterBiFunc.apply(tipe, lokasi);
+        return filterBiFunc.apply(type, location);
     }
 
-    // BONUS CHALLENGE 2
-    public Map<String, DoubleSummaryStatistics> dapatkanStatistikHargaPerTipe() {
+    public Map<String, DoubleSummaryStatistics> getPriceStatisticsByType() {
         return products.stream()
                 .collect(Collectors.groupingBy(
                         PropertyAsset::getPropertyType,
@@ -181,10 +179,9 @@ public class PropertyService {
                 ));
     }
 
-    // BONUS CHALLENGE 3
-    public Optional<PropertyAsset> cariBerdasarkanId(String id) {
+    public Optional<PropertyAsset> findById(String id) {
         return products.stream()
-                .filter(p -> p.getId().equalsIgnoreCase(id))
+                .filter(property -> property.getId().equalsIgnoreCase(id))
                 .findFirst();
     }
 }
